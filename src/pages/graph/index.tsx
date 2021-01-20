@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
+import { makeStyles, Typography } from "@material-ui/core";
 import lightningGraph from "../../assets/lightning_graph.json";
 import { IAdjacencyList, IEdgesFunc, IGraph, INodesFunc } from "./interfaces";
 import { Graph } from "../../components/Graph";
@@ -11,7 +12,8 @@ map function in an useMemo hook, so the function is only executed once,
 even if the component remounts. Since the visualization of all nodes was
 a bit laggy, I decided to create an adjacency list, so I can control how
 many channels each node has, and then display only nodes with x or more
-channels
+channels. I created a function to show more nodes, so whenever you clicks
+a node and it has more channels, its node's and channels are displayed
 */
 
 const adjacencyList: IAdjacencyList = {};
@@ -42,26 +44,45 @@ const leanLightningGraph = () => {
   return { nodes, links };
 };
 
+// add property visible to nodes with min number of channels
 const showNodes = (nodes: INodesFunc[], edges: number) =>
   nodes.map((node) => ({
     ...node,
     visible: adjacencyList[node.publicKey].length >= edges,
   }));
 
+// styles
+const useStyles = makeStyles({
+  container: {
+    position: "relative",
+  },
+  info: {
+    position: "absolute",
+    bottom: 25,
+    left: 15,
+  },
+  text: {
+    color: "white",
+  },
+});
+
 export const GraphPage: React.FC = () => {
-  const [minEdges, setMinEdges] = useState(60);
+  const classes = useStyles();
+  const minEdges = 30;
 
   const graph = useMemo(() => {
     const { nodes, links } = leanLightningGraph();
     const visibleNodes = showNodes(nodes, minEdges);
     return { nodes: visibleNodes, links };
-  }, [minEdges]);
+  }, []);
 
+  // create a dic of nodes to faster access
   const nodesById = useMemo(
     () => Object.fromEntries(graph.nodes.map((node) => [node.publicKey, node])),
     [graph]
   );
 
+  // function to return the nodes and channels
   const getPrunedTree = useCallback(() => {
     const visibleLinks: IEdgesFunc[] = [];
     const visibleNodes = graph.nodes.filter((node) => node.visible);
@@ -73,11 +94,12 @@ export const GraphPage: React.FC = () => {
     return { nodes: visibleNodes, links: visibleLinks };
   }, [nodesById, graph]);
 
+  // graph state
   const [prunedTree, setPrunedTree] = useState(getPrunedTree());
 
   const handleNodeClick = useCallback((node: INodesFunc) => {
     if (adjacencyList[node.publicKey].length <= 1) {
-      node.visible = false; // eslint-disable-line no-param-reassign
+      nodesById[node.publicKey].visible = false;
       setPrunedTree(getPrunedTree());
       return;
     }
@@ -88,9 +110,19 @@ export const GraphPage: React.FC = () => {
   }, []);
 
   return (
-    <Graph
-      graph={prunedTree}
-      onNodeClick={(node: any) => handleNodeClick(node)}
-    />
+    <div className={classes.container}>
+      <Graph
+        graph={prunedTree}
+        onNodeClick={(node: any) => handleNodeClick(node)}
+      />
+      <div className={classes.info}>
+        <Typography className={classes.text} gutterBottom>
+          Initially showing nodes with {minEdges} or more channels
+        </Typography>
+        <Typography className={classes.text}>
+          Click on a node to expand channels to smaller nodes
+        </Typography>
+      </div>
+    </div>
   );
 };
