@@ -64,3 +64,8 @@ export interface IEdgesFunc {
   capacity: string;
   color: string;
 }
+
+export interface IGraphFunc {
+  nodes: INodesFunc[];
+  links: IEdgesFunc[];
+}

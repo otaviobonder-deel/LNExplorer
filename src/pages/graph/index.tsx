@@ -1,7 +1,13 @@
-import React, { useCallback, useMemo, useState } from "react";
-import { makeStyles, Typography } from "@material-ui/core";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Button, makeStyles, Typography } from "@material-ui/core";
 import lightningGraph from "../../assets/lightning_graph.json";
-import { IAdjacencyList, IEdgesFunc, IGraph, INodesFunc } from "./interfaces";
+import {
+  IAdjacencyList,
+  IEdgesFunc,
+  IGraph,
+  IGraphFunc,
+  INodesFunc,
+} from "./interfaces";
 import { Graph } from "../../components/Graph";
 
 /*
@@ -56,9 +62,15 @@ const useStyles = makeStyles({
   container: {
     position: "relative",
   },
+  loaderContainer: {
+    display: "flex",
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   info: {
     position: "absolute",
-    bottom: 25,
+    bottom: "10%",
     left: 15,
   },
   text: {
@@ -68,13 +80,13 @@ const useStyles = makeStyles({
 
 export const GraphPage: React.FC = () => {
   const classes = useStyles();
-  const minEdges = 30;
+  const [minEdges, setMinEdges] = useState(30);
 
   const graph = useMemo(() => {
     const { nodes, links } = leanLightningGraph();
     const visibleNodes = showNodes(nodes, minEdges);
     return { nodes: visibleNodes, links };
-  }, []);
+  }, [minEdges]);
 
   // create a dic of nodes to faster access
   const nodesById = useMemo(
@@ -95,7 +107,12 @@ export const GraphPage: React.FC = () => {
   }, [nodesById, graph]);
 
   // graph state
-  const [prunedTree, setPrunedTree] = useState(getPrunedTree());
+  const [prunedTree, setPrunedTree] = useState<IGraphFunc | undefined>();
+
+  // update state when changing pruned tree
+  useEffect(() => {
+    setPrunedTree(getPrunedTree());
+  }, [getPrunedTree]);
 
   const handleNodeClick = useCallback((node: INodesFunc) => {
     if (adjacencyList[node.publicKey].length <= 1) {
@@ -107,7 +124,24 @@ export const GraphPage: React.FC = () => {
       nodesById[nodeId].visible = true;
     });
     setPrunedTree(getPrunedTree());
+    // eslint-disable-next-line
   }, []);
+
+  const handleButtonClick = () => {
+    if (minEdges === 0) {
+      setMinEdges(30);
+      return;
+    }
+    setMinEdges(0);
+  };
+
+  if (!prunedTree) {
+    return (
+      <div className={classes.loaderContainer}>
+        <Typography align="center">Loading</Typography>
+      </div>
+    );
+  }
 
   return (
     <div className={classes.container}>
@@ -117,11 +151,30 @@ export const GraphPage: React.FC = () => {
       />
       <div className={classes.info}>
         <Typography className={classes.text} gutterBottom>
-          Initially showing nodes with {minEdges} or more channels
+          Rendering {prunedTree.nodes.length} nodes and{" "}
+          {prunedTree.links.length} channels
         </Typography>
-        <Typography className={classes.text}>
+        <Typography className={classes.text} gutterBottom>
           Click on a node to expand channels to smaller nodes
         </Typography>
+        {minEdges === 0 ? (
+          <Typography className={classes.text} gutterBottom>
+            Showing all nodes and channels
+          </Typography>
+        ) : (
+          <Typography className={classes.text} gutterBottom>
+            Initially showing nodes with {minEdges} or more channels
+          </Typography>
+        )}
+        <Button
+          color="secondary"
+          variant="outlined"
+          onClick={handleButtonClick}
+        >
+          {minEdges === 0
+            ? "Show only nodes with 30 or more channels"
+            : "Show all nodes and channels"}
+        </Button>
       </div>
     </div>
   );
