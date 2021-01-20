@@ -1,14 +1,27 @@
 import React from "react";
-import { CssBaseline } from "@material-ui/core";
+import { CssBaseline, makeStyles } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/core/styles";
 import { GraphPage } from "./pages/graph";
 import theme from "./styles/customMuiTheme";
 
-const App: React.FC = () => (
-  <ThemeProvider theme={theme}>
-    <CssBaseline />
-    <GraphPage />
-  </ThemeProvider>
-);
+const useStyles = makeStyles({
+  body: {
+    display: "flex",
+    minHeight: "100vh",
+  },
+});
+
+const App: React.FC = () => {
+  const classes = useStyles();
+
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <div className={classes.body}>
+        <GraphPage />
+      </div>
+    </ThemeProvider>
+  );
+};
 
 export default App;
