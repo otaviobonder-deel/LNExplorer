@@ -1,11 +1,11 @@
 /* eslint-disable camelcase */
 
 export interface IGraph {
-  nodes: INodes[];
-  edges: IEdges[];
+  nodes: INodesFile[];
+  edges: IEdgesFile[];
 }
 
-export interface INodes {
+export interface INodesFile {
   last_update: number;
   pub_key: string;
   alias?: string;
@@ -26,7 +26,7 @@ interface IFeature {
   is_known: boolean;
 }
 
-export interface IEdges {
+export interface IEdgesFile {
   channel_id: string;
   chan_point: string;
   last_update: number;
@@ -44,4 +44,23 @@ interface INodePolicy {
   disabled: boolean;
   max_htlc_msat: string;
   last_update: number;
+}
+
+export interface IAdjacencyList {
+  [key: string]: string[];
+}
+
+export interface INodesFunc {
+  publicKey: string;
+  alias: string;
+  color: string;
+  visible: boolean;
+}
+
+export interface IEdgesFunc {
+  channelId: string;
+  node1: string;
+  node2: string;
+  capacity: string;
+  color: string;
 }
