@@ -80,7 +80,12 @@ const useStyles = makeStyles({
 
 export const GraphPage: React.FC = () => {
   const classes = useStyles();
+
+  // minimum amount of channels to show on graph
   const [minEdges, setMinEdges] = useState(30);
+
+  // graph state
+  const [prunedTree, setPrunedTree] = useState<IGraphFunc | undefined>();
 
   const graph = useMemo(() => {
     const { nodes, links } = leanLightningGraph();
@@ -106,14 +111,12 @@ export const GraphPage: React.FC = () => {
     return { nodes: visibleNodes, links: visibleLinks };
   }, [nodesById, graph]);
 
-  // graph state
-  const [prunedTree, setPrunedTree] = useState<IGraphFunc | undefined>();
-
   // update state when changing pruned tree
   useEffect(() => {
     setPrunedTree(getPrunedTree());
   }, [getPrunedTree]);
 
+  // show node channels with smaller nodes
   const handleNodeClick = useCallback((node: INodesFunc) => {
     if (adjacencyList[node.publicKey].length <= 1) {
       nodesById[node.publicKey].visible = false;
@@ -127,6 +130,7 @@ export const GraphPage: React.FC = () => {
     // eslint-disable-next-line
   }, []);
 
+  // show all nodes/channels or return to default
   const handleButtonClick = () => {
     if (minEdges === 0) {
       setMinEdges(30);
@@ -135,6 +139,7 @@ export const GraphPage: React.FC = () => {
     setMinEdges(0);
   };
 
+  // while graph is loading
   if (!prunedTree) {
     return (
       <div className={classes.loaderContainer}>
