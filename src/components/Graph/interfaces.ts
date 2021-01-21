@@ -10,11 +10,11 @@ interface IGraph {
   links: ILinks[];
 }
 
-interface INodes {
-  publicKey: string;
-  alias: string;
-  color: string;
-  visible: boolean;
+export interface INodes extends NodeObject {
+  publicKey?: string;
+  alias?: string;
+  color?: string;
+  visible?: boolean;
 }
 
 interface ILinks {
