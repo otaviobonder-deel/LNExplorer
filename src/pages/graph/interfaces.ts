@@ -47,7 +47,7 @@ interface INodePolicy {
 }
 
 export interface IAdjacencyList {
-  [key: string]: string[];
+  [key: string]: IEdgesFunc[];
 }
 
 export interface INodesFunc {
@@ -55,6 +55,7 @@ export interface INodesFunc {
   alias: string;
   color: string;
   visible: boolean;
+  links?: IEdgesFunc[];
 }
 
 export interface IEdgesFunc {

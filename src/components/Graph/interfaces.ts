@@ -1,4 +1,5 @@
-import { NodeObject } from "react-force-graph-3d";
+import React from "react";
+import { ForceGraphMethods, NodeObject } from "react-force-graph-3d";
 
 export interface IProps {
   graph: IGraph;
@@ -23,4 +24,18 @@ interface ILinks {
   node2: string;
   capacity: string;
   color: string;
+}
+
+export interface IOptions {
+  zoomToFit: boolean;
+}
+
+export interface IOptionsProps {
+  options: IOptions;
+  setOptions: (options: IOptions) => void;
+}
+
+export interface INodeInfoProps {
+  graphRef: React.RefObject<ForceGraphMethods | undefined>;
+  info: INodes | null;
 }

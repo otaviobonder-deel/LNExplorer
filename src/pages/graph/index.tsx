@@ -36,15 +36,25 @@ const leanLightningGraph = () => {
   });
 
   const links: IEdgesFunc[] = (lightningGraph as IGraph).edges.map((edge) => {
-    adjacencyList[edge.node1_pub].push(edge.node2_pub);
-    adjacencyList[edge.node2_pub].push(edge.node1_pub);
-    return {
-      channelId: edge.channel_id,
-      node1: edge.node1_pub,
-      node2: edge.node2_pub,
-      capacity: edge.capacity,
-      color: ["red", "white", "blue", "green"][Math.round(Math.random() * 3)],
+    const {
+      node1_pub: node1,
+      node2_pub: node2,
+      channel_id: channelId,
+      capacity,
+    } = edge;
+    const color = ["red", "white", "blue", "green"][
+      Math.round(Math.random() * 3)
+    ];
+    const edgeNode = {
+      channelId,
+      node1,
+      node2,
+      capacity,
+      color,
     };
+    adjacencyList[edge.node1_pub].push(edgeNode);
+    adjacencyList[edge.node2_pub].push(edgeNode);
+    return edgeNode;
   });
 
   return { nodes, links };
@@ -59,8 +69,8 @@ const showNodes = (nodes: INodesFunc[], edges: number) =>
 
 // styles
 const useStyles = makeStyles({
-  container: {
-    position: "relative",
+  buttons: {
+    margin: "5px 0",
   },
   loaderContainer: {
     display: "flex",
@@ -69,6 +79,8 @@ const useStyles = makeStyles({
     justifyContent: "center",
   },
   info: {
+    display: "flex",
+    flexDirection: "column",
     position: "absolute",
     bottom: "10%",
     left: 15,
@@ -102,7 +114,13 @@ export const GraphPage: React.FC = () => {
   // function to return the nodes and channels
   const getPrunedTree = useCallback(() => {
     const visibleLinks: IEdgesFunc[] = [];
-    const visibleNodes = graph.nodes.filter((node) => node.visible);
+    const visibleNodes: INodesFunc[] = [];
+    graph.nodes.forEach((node) => {
+      if (node.visible) {
+        Object.assign(node, { links: adjacencyList[node.publicKey] });
+        visibleNodes.push(node);
+      }
+    });
     graph.links.forEach((link) => {
       if (nodesById[link.node1].visible && nodesById[link.node2].visible) {
         visibleLinks.push(link);
@@ -124,7 +142,8 @@ export const GraphPage: React.FC = () => {
       return;
     }
     adjacencyList[node.publicKey].forEach((nodeId) => {
-      nodesById[nodeId].visible = true;
+      nodesById[nodeId.node1].visible = true;
+      nodesById[nodeId.node2].visible = true;
     });
     setPrunedTree(getPrunedTree());
     // eslint-disable-next-line
@@ -149,7 +168,7 @@ export const GraphPage: React.FC = () => {
   }
 
   return (
-    <div className={classes.container}>
+    <>
       <Graph
         graph={prunedTree}
         onNodeClick={(node: any) => handleNodeClick(node)}
@@ -162,6 +181,9 @@ export const GraphPage: React.FC = () => {
         <Typography className={classes.text} gutterBottom>
           Click on a node to expand channels to smaller nodes
         </Typography>
+        <Typography className={classes.text} gutterBottom>
+          Hover on a node to get more info
+        </Typography>
         {minEdges === 0 ? (
           <Typography className={classes.text} gutterBottom>
             Showing all nodes and channels
@@ -172,6 +194,26 @@ export const GraphPage: React.FC = () => {
           </Typography>
         )}
         <Button
+          className={classes.buttons}
+          color="secondary"
+          variant="outlined"
+          disabled={minEdges === 0}
+          onClick={() =>
+            setMinEdges((prevEdges) => (prevEdges - 5 < 0 ? 0 : prevEdges - 5))
+          }
+        >
+          Show more nodes
+        </Button>
+        <Button
+          className={classes.buttons}
+          color="secondary"
+          variant="outlined"
+          onClick={() => setMinEdges((prevEdges) => prevEdges + 5)}
+        >
+          Show less nodes
+        </Button>
+        <Button
+          className={classes.buttons}
           color="secondary"
           variant="outlined"
           onClick={handleButtonClick}
@@ -181,6 +223,6 @@ export const GraphPage: React.FC = () => {
             : "Show all nodes and channels"}
         </Button>
       </div>
-    </div>
+    </>
   );
 };
