@@ -96,8 +96,6 @@ const NodeInfo: React.FC<INodeInfoProps> = ({ graphRef, info }) => {
     return { top: 0, left: 0 };
   };
 
-  console.log(maxY, maxX);
-
   if (info && graphRef.current) {
     return (
       <Paper
