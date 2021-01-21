@@ -1,46 +1,30 @@
-# Getting Started with Create React App
+# Lightning Network Explorer
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+All project was created in ReactJS using TypeScript
 
-## Available Scripts
+## How to run it?
 
-In the project directory, you can run:
+1. To run the project, clone it from Github, then enter the directory and build the docker image:
 
-### `yarn start`
+```
+docker build -t LNExplorer .
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+**Important: Docker must have at least 2GB ram to run the container, otherwise it will fail with a memory heap error. This is because React will build the project, and it needs 2GB or more of ram.**
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+2. After building the image, run the container. You need to bind a port to the container. Internally the port 80 is exposed because the container uses NGINX, but you need to bind some port of the host to the port 80 of the container:
 
-### `yarn test`
+```
+docker run -d -p 3000:80 LNExplorer
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+3. Enter `localhost:3000` in your browser. The `-p 3000:80` command binds the port 3000 of the host to the port 80 of the container. If port 3000 is already in use in your computer, change the port in the command to any available port, keeping the `:80` part of the command, then in the browser enter `localhost:<theportyouchose>`
 
-### `yarn build`
+## What does it do?
+This LN explorer was built with performance first, so it won't load all nodes initially. Loading a graph with more than 6,000 nodes and 30,000 channels is very CPU intensive, and the browser doesn't handle it very well. The explorer is configured to load only nodes with 30 or more open channels.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+It's possible to show all nodes and channels in the graph, just click the button to show all nodes and channels. The graph will reload showing every node and channel from the snapshot file. It can take some seconds to show the entire graph.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Clicking in a node will show all others nodes connected to it. If the node has only one channel (is a leaf), then it will be hidden from the chart.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Hovering a node will show more info about it.
