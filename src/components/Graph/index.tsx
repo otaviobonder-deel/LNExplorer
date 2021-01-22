@@ -84,7 +84,7 @@ export const Graph: React.FC<IProps> = ({ graph, onNodeClick }) => {
         [graph, onNodeClick, getPerformanceOptions]
       )}
       <Options graphRef={graphRef} />
-      <NodeInfo graphRef={graphRef} info={hoverNode} />
+      {hoverNode && <NodeInfo graphRef={graphRef} info={hoverNode} />}
     </>
   );
 };

@@ -1,13 +1,40 @@
 import React from "react";
 import { makeStyles, Paper, Typography } from "@material-ui/core";
-import { INodeInfoProps } from "./interfaces";
+import { IChannelsProps, INodeInfoProps } from "./interfaces";
 
 const useStyles = makeStyles({
   container: {
     position: "absolute",
-    padding: 5,
+    padding: 10,
+    maxHeight: 600,
+    width: 400,
+    overflowWrap: "break-word",
+    "& p": {
+      fontSize: 12,
+    },
+  },
+  channels: {
+    display: "flex",
+  },
+  channelsComponent: {
+    marginLeft: 5,
   },
 });
+
+const Channels: React.FC<IChannelsProps> = ({ info }) => {
+  const classes = useStyles();
+
+  return (
+    <div className={classes.channelsComponent}>
+      {info.links &&
+        info.links.map((link) => (
+          <Typography key={link.channelId}>
+            {link.channelId} - capacity {link.capacity} sats
+          </Typography>
+        ))}
+    </div>
+  );
+};
 
 export const NodeInfo: React.FC<INodeInfoProps> = ({ graphRef, info }) => {
   const classes = useStyles();
@@ -40,6 +67,10 @@ export const NodeInfo: React.FC<INodeInfoProps> = ({ graphRef, info }) => {
       >
         <Typography>Pubkey: {info.publicKey}</Typography>
         <Typography>Alias: {info.alias}</Typography>
+        <div className={classes.channels}>
+          <Typography>Channels:</Typography>
+          <Channels info={info} />
+        </div>
       </Paper>
     );
   }
