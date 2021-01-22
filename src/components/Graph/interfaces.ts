@@ -16,6 +16,7 @@ export interface INodes extends NodeObject {
   alias?: string;
   color?: string;
   visible?: boolean;
+  links?: ILinks[];
 }
 
 interface ILinks {
@@ -26,16 +27,6 @@ interface ILinks {
   color: string;
 }
 
-export interface IOptions {
-  zoomToFit: boolean;
-}
-
 export interface IOptionsProps {
-  options: IOptions;
-  setOptions: (options: IOptions) => void;
-}
-
-export interface INodeInfoProps {
   graphRef: React.RefObject<ForceGraphMethods | undefined>;
-  info: INodes | null;
 }
