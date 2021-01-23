@@ -21,7 +21,3 @@ export interface INodeInfoProps {
   graphRef: React.RefObject<ForceGraphMethods | undefined>;
   info: INodes | null;
 }
-
-export interface IChannelsProps {
-  info: INodes;
-}
