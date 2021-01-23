@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import ForceGraph, { ForceGraphMethods } from "react-force-graph-3d";
 import { Button, makeStyles } from "@material-ui/core";
 import { NodeInfo } from "../NodeInfo";
@@ -32,8 +38,13 @@ const Options: React.FC<IOptionsProps> = ({ graphRef }) => {
 
 export const Graph: React.FC<IProps> = ({ graph, onNodeClick }) => {
   const [hoverNode, setHoverNode] = useState<INodes | null>(null);
+  const [size, setSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
   const graphRef = useRef<ForceGraphMethods>();
 
+  // adapt options on quantity of nodes
   const getPerformanceOptions = useCallback(() => {
     const graphSize = graph.nodes.length;
     if (graphSize > 2500) {
@@ -54,6 +65,22 @@ export const Graph: React.FC<IProps> = ({ graph, onNodeClick }) => {
     };
   }, [graph.nodes.length]);
 
+  // resize graph on window resize
+  useEffect(() => {
+    const windowResize = () => {
+      setSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    window.addEventListener("resize", windowResize);
+
+    return () => {
+      window.removeEventListener("resize", windowResize);
+    };
+  }, []);
+
   return (
     <>
       {useMemo(
@@ -61,6 +88,8 @@ export const Graph: React.FC<IProps> = ({ graph, onNodeClick }) => {
           <ForceGraph
             ref={graphRef}
             graphData={graph}
+            width={size.width}
+            height={size.height}
             nodeId="publicKey"
             onNodeClick={onNodeClick}
             onNodeHover={(node) => setHoverNode(node)}
@@ -81,7 +110,7 @@ export const Graph: React.FC<IProps> = ({ graph, onNodeClick }) => {
             }}
           />
         ),
-        [graph, onNodeClick, getPerformanceOptions]
+        [graph, onNodeClick, getPerformanceOptions, size]
       )}
       <Options graphRef={graphRef} />
       {hoverNode && <NodeInfo graphRef={graphRef} info={hoverNode} />}
