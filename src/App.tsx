@@ -3,6 +3,7 @@ import { CssBaseline, makeStyles } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/core/styles";
 import { GraphPage } from "./pages/graph";
 import theme from "./styles/customMuiTheme";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 const useStyles = makeStyles({
   body: {
@@ -18,7 +19,9 @@ const App: React.FC = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <div className={classes.body}>
-        <GraphPage />
+        <ErrorBoundary>
+          <GraphPage />
+        </ErrorBoundary>
       </div>
     </ThemeProvider>
   );
