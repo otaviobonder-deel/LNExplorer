@@ -1,13 +1,6 @@
-import React, { Component, ReactNode } from "react";
+import React, { Component } from "react";
 import { Typography } from "@material-ui/core";
-
-interface Props {
-  children: ReactNode;
-}
-
-interface State {
-  hasError: boolean;
-}
+import { State, Props } from "./interfaces";
 
 class ErrorBoundary extends Component<Props, State> {
   // eslint-disable-next-line react/state-in-constructor
