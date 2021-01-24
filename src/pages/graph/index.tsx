@@ -11,7 +11,8 @@ import {
 import { Graph } from "../../components/Graph";
 
 /*
-Importing directly from file. Usually this would be an API call.
+Importing directly from file. Usually this would be an API call and
+the tests would have a mocked API response.
 Also, I decided to remove some unnecessary info from the graph file,
 since I only need some attributes. I chose to save the result of the
 map function in an useMemo hook, so the function is only executed once,
@@ -115,12 +116,14 @@ export const GraphPage: React.FC = () => {
   const getPrunedTree = useCallback(() => {
     const visibleLinks: IEdgesFunc[] = [];
     const visibleNodes: INodesFunc[] = [];
+    // only add nodes that should be visible
     graph.nodes.forEach((node) => {
       if (node.visible) {
         Object.assign(node, { links: adjacencyList[node.publicKey] });
         visibleNodes.push(node);
       }
     });
+    // only add edges that should be visible
     graph.links.forEach((link) => {
       if (nodesById[link.node1].visible && nodesById[link.node2].visible) {
         visibleLinks.push(link);
@@ -171,7 +174,7 @@ export const GraphPage: React.FC = () => {
     <>
       <Graph
         graph={prunedTree}
-        onNodeClick={(node: any) => handleNodeClick(node)}
+        onNodeClick={(node: any) => handleNodeClick(node)} // eslint-disable-line
       />
       <div className={classes.info}>
         <Typography className={classes.text} gutterBottom>
