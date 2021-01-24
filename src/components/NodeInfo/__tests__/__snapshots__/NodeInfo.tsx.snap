@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should render each node info 1`] = `
+<div
+  className="MuiPaper-root makeStyles-container-1 MuiPaper-elevation1 MuiPaper-rounded"
+  style={
+    Object {
+      "left": 0,
+      "top": 20,
+    }
+  }
+>
+  <p
+    className="MuiTypography-root MuiTypography-body1"
+  >
+    Pubkey: 
+    test123
+  </p>
+  <p
+    className="MuiTypography-root MuiTypography-body1"
+  >
+    Alias: 
+    test
+  </p>
+</div>
+`;
