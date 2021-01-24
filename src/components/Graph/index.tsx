@@ -113,7 +113,12 @@ export const Graph: React.FC<IProps> = ({ graph, onNodeClick }) => {
         [graph, onNodeClick, getPerformanceOptions, size]
       )}
       <Options graphRef={graphRef} />
-      {hoverNode && <NodeInfo graphRef={graphRef} info={hoverNode} />}
+      {hoverNode && graphRef.current && (
+        <NodeInfo
+          graph2ScreenCoords={graphRef.current.graph2ScreenCoords}
+          info={hoverNode}
+        />
+      )}
     </>
   );
 };

@@ -1,5 +1,4 @@
-import React from "react";
-import { ForceGraphMethods, NodeObject } from "react-force-graph-3d";
+import { NodeObject } from "react-force-graph-3d";
 
 interface ILinks {
   channelId: string;
@@ -18,6 +17,10 @@ export interface INodes extends NodeObject {
 }
 
 export interface INodeInfoProps {
-  graphRef: React.RefObject<ForceGraphMethods | undefined>;
+  graph2ScreenCoords(
+    x: number,
+    y: number,
+    z: number
+  ): { x: number; y: number; z: number };
   info: INodes | null;
 }

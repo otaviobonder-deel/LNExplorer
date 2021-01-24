@@ -18,26 +18,26 @@ const useStyles = makeStyles({
   },
 });
 
-export const NodeInfo: React.FC<INodeInfoProps> = ({ graphRef, info }) => {
+export const NodeInfo: React.FC<INodeInfoProps> = ({
+  graph2ScreenCoords,
+  info,
+}) => {
   const classes = useStyles();
 
   const getDivCoords = () => {
-    if (graphRef.current) {
-      const nodeCoordinates = graphRef.current.graph2ScreenCoords(
-        info?.x || 0,
-        info?.y || 0,
-        info?.z || 0
-      );
+    const nodeCoordinates = graph2ScreenCoords(
+      info?.x || 0,
+      info?.y || 0,
+      info?.z || 0
+    );
 
-      return {
-        top: nodeCoordinates.y + 20,
-        left: nodeCoordinates.x,
-      };
-    }
-    return { top: 0, left: 0 };
+    return {
+      top: nodeCoordinates.y + 20,
+      left: nodeCoordinates.x,
+    };
   };
 
-  if (info && graphRef.current) {
+  if (info) {
     return (
       <Paper
         className={classes.container}
