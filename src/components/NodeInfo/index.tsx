@@ -16,9 +16,6 @@ const useStyles = makeStyles({
   channels: {
     display: "flex",
   },
-  channelsComponent: {
-    marginLeft: 5,
-  },
 });
 
 export const NodeInfo: React.FC<INodeInfoProps> = ({ graphRef, info }) => {
