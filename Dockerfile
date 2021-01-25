@@ -18,6 +18,9 @@ RUN yarn global add react-scripts@4.0.1 --silent
 # add app
 COPY . /app
 
+# test app
+RUN CI=true yarn run test
+
 # build app
 RUN yarn run build
 
