@@ -1,5 +1,5 @@
 import React from "react";
-import renderer from "react-test-renderer";
+import { render } from "@testing-library/react";
 import { NodeInfo } from "../index";
 
 /*
@@ -25,8 +25,8 @@ it("should render a test node info", () => {
     ],
   };
   const graph2ScreenCoords = () => ({ x: 0, y: 0, z: 0 });
-  const tree = renderer
-    .create(<NodeInfo graph2ScreenCoords={graph2ScreenCoords} info={info} />)
-    .toJSON();
-  expect(tree).toMatchSnapshot();
+  const component = render(
+    <NodeInfo graph2ScreenCoords={graph2ScreenCoords} info={info} />
+  );
+  expect(component.container).toMatchSnapshot();
 });
