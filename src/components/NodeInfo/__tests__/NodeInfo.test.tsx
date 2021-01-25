@@ -2,6 +2,12 @@ import React from "react";
 import renderer from "react-test-renderer";
 import { NodeInfo } from "../index";
 
+/*
+Usually a server mock would run here to gather a mocked graph
+response from the api. But since I'm getting the info from
+a static JSON file, there's no sense in testing it
+*/
+
 it("should render a test node info", () => {
   const info = {
     publicKey: "test123",
