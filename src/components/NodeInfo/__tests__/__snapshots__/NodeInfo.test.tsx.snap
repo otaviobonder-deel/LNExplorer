@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should match the snapshot 1`] = `
+<div>
+  <div
+    class="MuiPaper-root makeStyles-container-1 MuiPaper-elevation1 MuiPaper-rounded"
+    style="top: 20px; left: 0px;"
+  >
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Pubkey: 
+      test123
+    </p>
+    <p
+      class="MuiTypography-root MuiTypography-body1"
+    >
+      Alias: 
+      test
+    </p>
+  </div>
+</div>
+`;
