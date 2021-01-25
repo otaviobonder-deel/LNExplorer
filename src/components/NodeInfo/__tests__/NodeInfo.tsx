@@ -2,7 +2,7 @@ import React from "react";
 import renderer from "react-test-renderer";
 import { NodeInfo } from "../index";
 
-it("should render each node info", () => {
+it("should render a test node info", () => {
   const info = {
     publicKey: "test123",
     alias: "test",
